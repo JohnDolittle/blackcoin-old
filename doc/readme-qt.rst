@@ -21,7 +21,7 @@ then execute the following:
 
 ::
 
-    qmake
+    qmake "USE_UPNP=-"
     make
 
 Alternatively, install Qt Creator and open the `blackcoin-qt.pro` file.
