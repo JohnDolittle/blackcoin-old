@@ -1250,9 +1250,8 @@ void MapPort()
 // Each pair gives a source name and a seed name.
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
-static const char *strDNSSeed[][2] = {
+static const char *strDNSSeed[][1] = {
     {"rat4.blackcoin.co", "seed.blackcoin.co"},
-    {"maarx.blackcoin.co", "seed2.blackcoin.co"},
     {"archon.darkfox.id.au", "foxy.seeds.darkfox.id.au"},
 };
 
