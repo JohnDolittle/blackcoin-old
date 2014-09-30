@@ -63,6 +63,55 @@ Mac OS X
 .. _`MacPorts`: http://www.macports.org/install.php
 
 
+Windows (cross compiling from linux)
+--------
+
+- Build MXE
+
+:: 
+
+	git clone https://github.com/mxe/mxe -b stable
+	cd mxe
+	make qttools boost
+	
+- Build Berkely DB
+
+::
+
+	cd
+	wget http://download.oracle.com/berkeley-db/db-4.8.30.tar.gz
+	tar xvfz db-4.8.30.tar.gz
+	mkdir db-4.8.30/build_mxe
+	cd db-4.8.30/build_mxe
+	export PATH=<path to mxe>/usr/bin/:${PATH};CC=i686-pc-mingw32-gcc CXX=i686-pc-mingw32-g++ ../dist/configure --disable-replication --enable-mingw --enable-cxx --host x86_64 --prefix=<path to mxe>/usr/i686-pc-mingw32
+	make
+	make install
+	
+- Build miniUPNP
+
+::
+
+	cd
+	wget http://miniupnp.free.fr/files/download.php?file=miniupnpc-1.9.tar.gz -O miniupnpc-1.9.tar.gz
+	tar xvfz miniupnpc-1.9.tar.gz
+	cd miniupnpc-1.9
+	CC=i686-pc-mingw32-gcc AR=i686-pc-mingw32-ar CFLAGS="-DSTATICLIB -I<path to mxe>/usr/i686-pc-mingw32/include" LDFLAGS=-L<path to mxe>/usr/i686-pc-mingw32/lib make libminiupnpc.a
+	mkdir <path to mxe>/usr/i686-pc-mingw32/include/miniupnpc/
+	cp *.h <path to mxe>/usr/i686-pc-mingw32/include/miniupnpc/
+	cp libminiupnpc.a <path to mxe>/usr/i686-pc-mingw32/lib/
+
+- Build blackcoin-qt.exe (the exe will be located in blackcoin/release)
+
+::
+
+	cd
+	git clone https://github.com/rat4/blackcoin
+	cd blackcoin
+	export PATH=<path to mxe>/usr/i686-pc-mingw32/qt5/bin/:${PATH}
+	<path to mxe>/usr/i686-pc-mingw32/qt5/bin/qmake
+	make
+
+
 Build configuration options
 ============================
 
