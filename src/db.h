@@ -5,6 +5,7 @@
 #ifndef BITCOIN_DB_H
 #define BITCOIN_DB_H
 
+#include "main.h"
 #include "sync.h"
 #include "serialize.h"
 
