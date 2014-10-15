@@ -84,7 +84,7 @@ Dieses Produkt enthält Software, die vom OpenSSL-Projekt zur Verwendung im Open
     <message>
         <location line="+3"/>
         <source>Sign &amp;Message</source>
-	      <translation>&amp;Nachricht signieren</translation>
+        <translation>&amp;Nachricht signieren</translation>
     </message>
     <message>
         <location line="+25"/>
