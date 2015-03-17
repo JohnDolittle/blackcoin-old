@@ -318,7 +318,14 @@ void BitcoinGUI::createActions()
 
 void BitcoinGUI::createMenuBar()
 {
-    appMenuBar = new QMenuBar();
+    #ifdef Q_OS_MAC
+        // Create a decoupled menu bar on Mac which stays even if the window is closed
+        appMenuBar = new QMenuBar();
+    #else
+        // Get the main window's menu bar on other platforms
+        appMenuBar = menuBar();
+    #endif
+
 
     // Configure the menus
     QMenu *file = appMenuBar->addMenu(tr("&File"));
