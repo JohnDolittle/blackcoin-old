@@ -329,6 +329,11 @@ inline bool IsSwitchChar(char c)
 #endif
 }
 
+namespace bcblk
+{
+void* memrchr(const void *s, int c, size_t n);
+}
+
 /**
  * Return string argument or default value
  *
