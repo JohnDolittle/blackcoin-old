@@ -506,6 +506,24 @@ void ParseParameters(int argc, const char* const argv[])
     }
 }
 
+namespace bcblk
+{
+void* memrchr(const void *s, int c, size_t n)
+{
+    if (n < 1)
+        return NULL;
+
+    unsigned char* cp = (unsigned char*) s + n;
+
+    do {
+        if (*(--cp) == (unsigned char) c)
+            return (void*) cp;
+    } while (--n != 0);
+
+    return NULL;
+};
+}
+
 std::string GetArg(const std::string& strArg, const std::string& strDefault)
 {
     if (mapArgs.count(strArg))

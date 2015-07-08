@@ -263,6 +263,11 @@ bool CTxDB::WriteBlockIndex(const CDiskBlockIndex& blockindex)
     return Write(make_pair(string("blockindex"), blockindex.GetBlockHash()), blockindex);
 }
 
+bool CTxDB::EraseBlockIndex(const uint256& blockhash)
+{
+    return Erase(make_pair(string("blockindex"), blockhash));
+}
+
 bool CTxDB::ReadHashBestChain(uint256& hashBestChain)
 {
     return Read(string("hashBestChain"), hashBestChain);
@@ -404,13 +409,21 @@ bool CTxDB::LoadBlockIndex()
     {
         CBlockIndex* pindex = item.second;
         vSortedByHeight.push_back(make_pair(pindex->nHeight, pindex));
-    }
+    };
     sort(vSortedByHeight.begin(), vSortedByHeight.end());
     BOOST_FOREACH(const PAIRTYPE(int, CBlockIndex*)& item, vSortedByHeight)
     {
         CBlockIndex* pindex = item.second;
+        
+        if (!pindex->pprev && pindex->GetBlockHash() != Params().HashGenesisBlock())
+        {
+            if (fDebug)
+                LogPrintf("LoadBlockIndex(): Warning - Found orphaned block, height %d, hash %s. Suggest rewindchain, reindex.\n", pindex->nHeight, pindex->GetBlockHash().ToString().c_str());
+            continue;
+        };
+
         pindex->nChainTrust = (pindex->pprev ? pindex->pprev->nChainTrust : 0) + pindex->GetBlockTrust();
-    }
+    };
 
     // Load hashBestChain pointer to end of best chain
     if (!ReadHashBestChain(hashBestChain))

@@ -2403,32 +2403,37 @@ static filesystem::path BlockFilePath(unsigned int nFile)
     return GetDataDir() / strBlockFn;
 }
 
-FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode)
+static unsigned int nCurrentBlockFile = 1;
+
+FILE* OpenBlockFile(bool fHeaderFile, unsigned int nFile, unsigned int nBlockPos, const char* pszMode)
 {
     if ((nFile < 1) || (nFile == (unsigned int) -1))
         return NULL;
-    FILE* file = fopen(BlockFilePath(nFile).string().c_str(), pszMode);
+    
+    string strBlockFn = strprintf(fHeaderFile ? "blk_hdr%04u.dat": "blk%04u.dat", nFile);
+    FILE* file = fopen((GetDataDir() / strBlockFn).string().c_str(), pszMode);
     if (!file)
         return NULL;
+    
     if (nBlockPos != 0 && !strchr(pszMode, 'a') && !strchr(pszMode, 'w'))
     {
         if (fseek(file, nBlockPos, SEEK_SET) != 0)
         {
             fclose(file);
             return NULL;
-        }
-    }
+        };
+    };
     return file;
 }
 
-static unsigned int nCurrentBlockFile = 1;
-
-FILE* AppendBlockFile(unsigned int& nFileRet)
+FILE* AppendBlockFile(bool fHeaderFile, unsigned int& nFileRet, const char* fmode)
 {
     nFileRet = 0;
     while (true)
     {
-        FILE* file = OpenBlockFile(nCurrentBlockFile, 0, "ab");
+        FILE* file = OpenBlockFile(fHeaderFile, nCurrentBlockFile,
+            0, fmode);
+        
         if (!file)
             return NULL;
         if (fseek(file, 0, SEEK_END) != 0)
@@ -2438,10 +2443,11 @@ FILE* AppendBlockFile(unsigned int& nFileRet)
         {
             nFileRet = nCurrentBlockFile;
             return file;
-        }
+        };
+        
         fclose(file);
         nCurrentBlockFile++;
-    }
+    };
 }
 
 bool LoadBlockIndex(bool fAllowNew)
