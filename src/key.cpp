@@ -227,11 +227,23 @@ public:
         return true;
     }
 
-    bool Verify(const uint256 &hash, const std::vector<unsigned char>& vchSig) {
-        // -1 = error, 0 = bad sig, 1 = good
-        if (ECDSA_verify(0, (unsigned char*)&hash, sizeof(hash), &vchSig[0], vchSig.size(), pkey) != 1)
-            return false;
-        return true;
+    bool Verify(const uint256 &hash, const std::vector<unsigned char>& vchSigParam) 
+    {
+    // Prevent the problem described here: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-July/009697.html
+    // by removing the extra length bytes
+    std::vector<unsigned char> vchSig(vchSigParam.begin(), vchSigParam.end());
+    if (vchSig.size() > 1 && vchSig[1] & 0x80)
+    {
+        unsigned char nLengthBytes = vchSig[1] & 0x7f;
+        if (nLengthBytes > 4)
+        {
+            unsigned char nExtraBytes = nLengthBytes - 4;
+            for (unsigned char i = 0; i < nExtraBytes; i++)
+                if (vchSig[2 + i])
+                    return false;
+            vchSig.erase(vchSig.begin() + 2, vchSig.begin() + 2 + nExtraBytes);
+            vchSig[1] = 0x80 | (nLengthBytes - nExtraBytes);
+        }
     }
 
     bool SignCompact(const uint256 &hash, unsigned char *p64, int &rec) {
