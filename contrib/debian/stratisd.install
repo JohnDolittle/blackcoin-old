@@ -1,0 +1,2 @@
+debian/bin/stratisd usr/bin
+src/stratisd usr/lib/stratis

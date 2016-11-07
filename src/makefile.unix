@@ -134,7 +134,21 @@ OBJS= \
     obj/scrypt-arm.o \
     obj/scrypt-x86.o \
     obj/scrypt-x86_64.o \
-    obj/chainparams.o
+    obj/chainparams.o \
+    obj/x13hash/cubehash.o \
+    obj/x13hash/luffa.o \
+    obj/x13hash/aes_helper.o \
+    obj/x13hash/echo.o \
+    obj/x13hash/shavite.o \
+    obj/x13hash/simd.o \
+    obj/x13hash/blake.o\
+    obj/x13hash/bmw.o\
+    obj/x13hash/groestl.o\
+    obj/x13hash/jh.o\
+    obj/x13hash/keccak.o\
+    obj/x13hash/skein.o\
+    obj/x13hash/hamsi.o\
+	obj/x13hash/fugue.o
 
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET
@@ -148,7 +162,7 @@ ifeq (${USE_WALLET}, 1)
         obj/walletdb.o
 endif
 
-all: blackcoind
+all: stratisd
 
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
@@ -182,11 +196,18 @@ obj/%.o: %.cpp
 	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	  rm -f $(@:%.o=%.d)
 
-blackcoind: $(OBJS:obj/%=obj/%)
+obj/%.o: %.c
+	$(CXX) -c $(xCXXFLAGS) -fpermissive -MMD -MF $(@:%.o=%.d) -o $@ $<
+	@cp $(@:%.o=%.d) $(@:%.o=%.P); \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
+	  rm -f $(@:%.o=%.d)
+
+stratisd: $(OBJS:obj/%=obj/%)
 	$(LINK) $(xCXXFLAGS) -o $@ $^ $(xLDFLAGS) $(LIBS)
 
 clean:
-	-rm -f blackcoind
+	-rm -f stratisd
 	-rm -f obj/*.o
 	-rm -f obj/*.P
 	-rm -f obj/build.h

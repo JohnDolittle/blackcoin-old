@@ -1,6 +1,6 @@
 [Protocol]
-exec=blackcoin-qt '%u'
-protocol=blackcoin
+exec=stratis-qt '%u'
+protocol=stratis
 input=none
 output=none
 helper=true

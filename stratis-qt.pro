@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = blackcoin-qt
+TARGET = stratis-qt
 VERSION = 1.2.2
 INCLUDEPATH += src src/json src/qt
 QT += network
@@ -226,9 +226,36 @@ HEADERS += src/qt/bitcoingui.h \
     src/netbase.h \
     src/clientversion.h \
     src/threadsafety.h \
-    src/tinyformat.h
+    src/tinyformat.h \
+    src/x13hash/sph_blake.h \
+    src/x13hash/sph_skein.h \
+    src/x13hash/sph_keccak.h \
+    src/x13hash/sph_jh.h \
+    src/x13hash/sph_groestl.h \
+    src/x13hash/sph_bmw.h \
+    src/x13hash/sph_types.h \
+    src/x13hash/sph_luffa.h \
+    src/x13hash/sph_cubehash.h \
+    src/x13hash/sph_echo.h \
+    src/x13hash/sph_shavite.h \
+    src/x13hash/sph_simd.h \
+    src/x13hash/sph_hamsi.h \
+	src/x13hash/sph_fugue.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
+    src/x13hash/blake.c \
+    src/x13hash/bmw.c \
+    src/x13hash/groestl.c \
+    src/x13hash/jh.c \
+    src/x13hash/keccak.c \
+    src/x13hash/skein.c \
+    src/x13hash/luffa.c \
+    src/x13hash/cubehash.c \
+    src/x13hash/shavite.c \
+    src/x13hash/echo.c \
+    src/x13hash/simd.c \
+    src/x13hash/hamsi.c \
+	src/x13hash/fugue.c \
     src/qt/transactiontablemodel.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
@@ -401,7 +428,7 @@ macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "BlackCoin-Qt"
+macx:TARGET = "Stratis-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread

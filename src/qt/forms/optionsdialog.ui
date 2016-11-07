@@ -125,10 +125,10 @@
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
          <property name="toolTip">
-          <string>Automatically start BlackCoin after logging in to the system.</string>
+          <string>Automatically start Stratis after logging in to the system.</string>
          </property>
          <property name="text">
-          <string>&amp;Start BlackCoin on system login</string>
+          <string>&amp;Start Stratis on system login</string>
          </property>
         </widget>
        </item>
@@ -155,7 +155,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
          <property name="toolTip">
-          <string>Automatically open the BlackCoin client port on the router. This only works when your router supports UPnP and it is enabled.</string>
+          <string>Automatically open the Stratis client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
          <property name="text">
           <string>Map port using &amp;UPnP</string>
@@ -165,7 +165,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
-          <string>Connect to the BlackCoin network through a SOCKS5 proxy (e.g. when connecting through Tor).</string>
+          <string>Connect to the Stratis network through a SOCKS5 proxy (e.g. when connecting through Tor).</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS5 proxy:</string>
@@ -319,7 +319,7 @@
          <item>
           <widget class="QValueComboBox" name="lang">
            <property name="toolTip">
-            <string>The user interface language can be set here. This setting will take effect after restarting BlackCoin.</string>
+            <string>The user interface language can be set here. This setting will take effect after restarting Stratis.</string>
            </property>
           </widget>
          </item>

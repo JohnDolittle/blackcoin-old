@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Stratis
+Comment=Stratis P2P Cryptocurrency
+Exec=/usr/bin/stratis-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/bitcoin80.xpm
+MimeType=x-scheme-handler/stratis;
+Categories=Office;
+Name[en_US]=stratis-qt.desktop
