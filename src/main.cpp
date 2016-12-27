@@ -1416,7 +1416,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
     if (IsProtocolV3(nTime))
     {
-        flags |= SCRIPT_VERIFY_NULLDUMMY |
+        flags =  SCRIPT_VERIFY_NULLDUMMY |
                  SCRIPT_VERIFY_STRICTENC |
                  SCRIPT_VERIFY_ALLOW_EMPTY_SIG |
                  SCRIPT_VERIFY_FIX_HASHTYPE |
