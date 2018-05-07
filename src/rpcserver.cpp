@@ -82,10 +82,12 @@ void RPCTypeCheck(const Object& o,
     }
 }
 
-int64_t AmountFromValue(const Value& value)
+int64_t AmountFromValue(const Value& value, bool allowZero)
 {
     double dAmount = value.get_real();
-    if (dAmount <= 0.0 || dAmount > MAX_MONEY)
+    if (dAmount < 0.0 || dAmount > MAX_MONEY)
+        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
+    if (dAmount == 0 && !allowZero)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     int64_t nAmount = roundint64(dAmount * COIN);
     if (!MoneyRange(nAmount))
@@ -202,10 +204,10 @@ Value stop(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "Stop BlackCoin server.");
+            "Stop DopeCoin server.");
     // Shutdown will take long enough that the response should get back
     StartShutdown();
-    return "BlackCoin server stopping";
+    return "DopeCoin server stopping";
 }
 
 
@@ -256,6 +258,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getaccount",             &getaccount,             false,     false,     true },
     { "getaddressesbyaccount",  &getaddressesbyaccount,  true,      false,     true },
     { "sendtoaddress",          &sendtoaddress,          false,     false,     true },
+    { "burn",                   &burn,                   false,     false,     true },
     { "getreceivedbyaddress",   &getreceivedbyaddress,   false,     false,     true },
     { "getreceivedbyaccount",   &getreceivedbyaccount,   false,     false,     true },
     { "listreceivedbyaddress",  &listreceivedbyaddress,  false,     false,     true },
@@ -491,7 +494,7 @@ void StartRPCThreads()
     {
         unsigned char rand_pwd[32];
         RAND_bytes(rand_pwd, 32);
-        string strWhatAmI = "To use blackcoind";
+        string strWhatAmI = "To use dopecoind";
         if (mapArgs.count("-server"))
             strWhatAmI = strprintf(_("To use the %s option"), "\"-server\"");
         else if (mapArgs.count("-daemon"))
@@ -500,13 +503,13 @@ void StartRPCThreads()
             _("%s, you must set a rpcpassword in the configuration file:\n"
               "%s\n"
               "It is recommended you use the following random password:\n"
-              "rpcuser=blackcoinrpc\n"
+              "rpcuser=dopecoinrpc\n"
               "rpcpassword=%s\n"
               "(you do not need to remember this password)\n"
               "The username and password MUST NOT be the same.\n"
               "If the file does not exist, create it with owner-readable-only file permissions.\n"
               "It is also recommended to set alertnotify so you are notified of problems;\n"
-              "for example: alertnotify=echo %%s | mail -s \"BlackCoin Alert\" admin@foo.com\n"),
+              "for example: alertnotify=echo %%s | mail -s \"DopeCoin Alert\" admin@foo.com\n"),
                 strWhatAmI,
                 GetConfigFile().string(),
                 EncodeBase58(&rand_pwd[0],&rand_pwd[0]+32)),

@@ -1,0 +1,69 @@
+QMainWindow {
+    background-color: #fff;
+}
+
+QToolBar,
+QToolBar::handle {
+    border: 0px;
+    background-color: #2C590C;
+    width: 150px;
+    padding: 0px;
+    margin: 0px;
+    border-right-style: none;
+}
+
+#menuToolbar QActionGroup {
+    border: 0px;
+    border-right-style: none;
+}
+
+#menuToolbar QToolButton {
+    width: 150px;
+    border: 0px;
+    margin:0;
+    padding: 0 0 0 10px;
+    min-height:48px;
+    background-color: #2C590C;
+    color:#fff;
+    font-size: 12px;
+    text-align: left;
+}
+
+#menuToolbar QToolButton:hover,
+#menuToolbar QToolButton:pressed,
+#menuToolbar QToolButton:selected {
+    background-color: #487c23;
+}
+
+#menuToolbar QToolButton:checked {
+    background-color: #fff;
+    color: #3B3A3A;
+}
+
+#menuToolbar QToolButton::disabled {
+    color: gray;
+}
+
+#dopecoinstatusbar {
+    background-color: #2C590C; color: #ffffff;
+} 
+
+#labelCoinControlQuantity,
+#labelCoinControlBytes,
+#labelCoinControlAmount,
+#labelCoinControlPriority,
+#labelCoinControlFee,
+#labelCoinControlLowOutput,
+#labelCoinControlAfterFee,
+#labelCoinControlChange {
+    border: 0px;
+    border-style: none;
+    color: #2C590C;
+}
+
+#scrollArea,
+#scrollAreaWidgetContents {
+    background-color: #fff;
+    border: 0px;
+    border-style: none;
+}

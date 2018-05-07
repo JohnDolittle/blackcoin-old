@@ -31,7 +31,7 @@ namespace GUIUtil
     void setupAddressWidget(QLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-    // Parse "blackcoin:" URI into recipient object, return true on successful parsing
+    // Parse "dopecoin:" URI into recipient object, return true on successful parsing
     // See Bitcoin URI definition discussion here: https://bitcointalk.org/index.php?topic=33490.0
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
@@ -115,8 +115,6 @@ namespace GUIUtil
         QString coreOptions;
         QString uiOptions;
     };
-
-    void SetBlackThemeQSS(QApplication& app);
 
 } // namespace GUIUtil
 

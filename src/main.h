@@ -47,22 +47,23 @@ static const int64_t MIN_TX_FEE = 10000;
 /** Fees smaller than this (in satoshi) are considered zero fee (for relaying) */
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 /** No amount larger than this (in satoshi) is valid */
-static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
+static const int64_t MAX_MONEY = 200000000 * COIN; // 200 million
+static const int64_t CIRCULATION_MONEY = MAX_MONEY;
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
+/** Block spacing */
+static const unsigned int nStakeTargetSpacing = 90; // 90 s
+static const int64_t nTargetTimespan = 90 * 20; // 30 min
+/** 5% annual reward */
+static const int64_t COIN_YEAR_REWARD = 5 * CENT;
 
-static const int64_t COIN_YEAR_REWARD = 1 * CENT; // 1% per year
+inline bool IsOnlyPOS(int nHeight) { return TestNet() ? nHeight > 100 : nHeight > 750; }
+inline int64_t GetStakeMinAge() { return TestNet() ? 1 * 60 * 60 : 12 * 60 * 60; } // 12 hours
 
-inline bool IsProtocolV1RetargetingFixed(int nHeight) { return TestNet() || nHeight > 38423; }
-inline bool IsProtocolV2(int nHeight) { return TestNet() || nHeight > 319000; }
-inline bool IsProtocolV3(int64_t nTime) { return TestNet() || nTime > 1444028400; }
-
-inline int64_t FutureDriftV1(int64_t nTime) { return nTime + 10 * 60; }
-inline int64_t FutureDriftV2(int64_t nTime) { return nTime + 15; }
-inline int64_t FutureDrift(int64_t nTime, int nHeight) { return IsProtocolV2(nHeight) ? FutureDriftV2(nTime) : FutureDriftV1(nTime); }
-
-inline unsigned int GetTargetSpacing(int nHeight) { return IsProtocolV2(nHeight) ? 64 : 60; }
+inline int64_t FutureDriftV1(int64_t nTime) { return nTime + 20 * 60; }
+inline int64_t FutureDriftV2(int64_t nTime) { return nTime + 30; }
+inline int64_t FutureDrift(int64_t nTime, int nHeight) { return IsOnlyPOS(nHeight) ? FutureDriftV2(nTime) : FutureDriftV1(nTime); }
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
@@ -133,8 +134,8 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles);
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
-int64_t GetProofOfWorkReward(int64_t nFees);
-int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees);
+int64_t GetProofOfWorkReward(int64_t nFees, int nHeight);
+int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees, int nHeight);
 bool IsInitialBlockDownload();
 bool IsConfirmedInNPrevBlocks(const CTxIndex& txindex, const CBlockIndex* pindexFrom, int nMaxDepth, int& nActualDepth);
 std::string GetWarnings(std::string strFor);
@@ -580,7 +581,7 @@ class CBlock
 {
 public:
     // header
-    static const int CURRENT_VERSION = 7;
+    static const int CURRENT_VERSION = 4;
     int nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -650,7 +651,7 @@ public:
 
     uint256 GetHash() const
     {
-        if (nVersion > 6)
+        if (nVersion > 4)
             return Hash(BEGIN(nVersion), END(nNonce));
         else
             return GetPoWHash();
@@ -990,10 +991,7 @@ public:
 
     int64_t GetPastTimeLimit() const
     {
-        if (IsProtocolV2(nHeight))
-            return GetBlockTime();
-        else
-            return GetMedianTimePast();
+        return GetBlockTime();
     }
 
     enum { nMedianTimeSpan=11 };

@@ -17,6 +17,7 @@ WalletModel::WalletModel(CWallet *wallet, OptionsModel *optionsModel, QObject *p
     QObject(parent), wallet(wallet), optionsModel(optionsModel), addressTableModel(0),
     transactionTableModel(0),
     cachedBalance(0), cachedStake(0), cachedUnconfirmedBalance(0), cachedImmatureBalance(0),
+    cachedNumTransactions(0),
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0)
 {
@@ -69,6 +70,21 @@ qint64 WalletModel::getImmatureBalance() const
     return wallet->GetImmatureBalance();
 }
 
+qint64 WalletModel::getMintedBalance() const
+{
+    return wallet->GetMintedBalance();
+}
+
+int WalletModel::getNumTransactions() const
+{
+    int numTransactions = 0;
+    {
+        LOCK(wallet->cs_wallet);
+        numTransactions = wallet->mapWallet.size();
+    }
+    return numTransactions;
+}
+
 void WalletModel::updateStatus()
 {
     EncryptionStatus newEncryptionStatus = getEncryptionStatus();
@@ -108,14 +124,16 @@ void WalletModel::checkBalanceChanged()
     qint64 newStake = getStake();
     qint64 newUnconfirmedBalance = getUnconfirmedBalance();
     qint64 newImmatureBalance = getImmatureBalance();
+    qint64 newMintedBalance = getMintedBalance();
 
-    if(cachedBalance != newBalance || cachedStake != newStake || cachedUnconfirmedBalance != newUnconfirmedBalance || cachedImmatureBalance != newImmatureBalance)
+    if(cachedBalance != newBalance || cachedStake != newStake || cachedUnconfirmedBalance != newUnconfirmedBalance || cachedImmatureBalance != newImmatureBalance || cachedMintedBalance != newMintedBalance)
     {
         cachedBalance = newBalance;
         cachedStake = newStake;
         cachedUnconfirmedBalance = newUnconfirmedBalance;
         cachedImmatureBalance = newImmatureBalance;
-        emit balanceChanged(newBalance, newStake, newUnconfirmedBalance, newImmatureBalance);
+        cachedMintedBalance = newMintedBalance;
+        emit balanceChanged(newBalance, newStake, newUnconfirmedBalance, newImmatureBalance, newMintedBalance);
     }
 }
 
@@ -126,6 +144,13 @@ void WalletModel::updateTransaction(const QString &hash, int status)
 
     // Balance and number of transactions might have changed
     fForceCheckBalanceChanged = true;
+    
+    int newNumTransactions = getNumTransactions();
+    if(cachedNumTransactions != newNumTransactions)
+    {
+        cachedNumTransactions = newNumTransactions;
+        emit numTransactionsChanged(newNumTransactions);
+    }
 }
 
 void WalletModel::updateAddressBook(const QString &address, const QString &label, bool isMine, int status)

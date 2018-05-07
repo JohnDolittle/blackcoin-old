@@ -28,7 +28,6 @@ public:
 
     // static because also called from sendcoinsdialog
     static void updateLabels(WalletModel*, QDialog*);
-    static QString getPriorityLabel(double);
 
     static QList<qint64> payAmounts;
     static CCoinControl *coinControl;
@@ -57,11 +56,9 @@ private:
         COLUMN_ADDRESS,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
-        COLUMN_PRIORITY,
         COLUMN_TXHASH,
         COLUMN_VOUT_INDEX,
-        COLUMN_AMOUNT_INT64,
-        COLUMN_PRIORITY_INT64
+        COLUMN_AMOUNT_INT64
     };
 
 private slots:
@@ -77,7 +74,6 @@ private slots:
     void clipboardFee();
     void clipboardAfterFee();
     void clipboardBytes();
-    void clipboardPriority();
     void clipboardLowOutput();
     void clipboardChange();
     void radioTreeMode(bool);

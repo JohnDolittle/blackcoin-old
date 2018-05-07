@@ -90,8 +90,7 @@ private:
     QAction *encryptWalletAction;
     QAction *backupWalletAction;
     QAction *changePassphraseAction;
-    QAction *unlockWalletAction;
-    QAction *lockWalletAction;
+    QAction *lockWalletToggleAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
 
@@ -181,6 +180,8 @@ private slots:
     void backupWallet();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
+    /** Toggle unlocking wallet temporarily */
+    void lockWalletToggle();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
 

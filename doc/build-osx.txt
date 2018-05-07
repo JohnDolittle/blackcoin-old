@@ -1,3 +1,4 @@
+Copyright (c) 2014 BlackCoin Developers
 Copyright (c) 2009-2012 Bitcoin Developers
 Distributed under the MIT/X11 software license, see the accompanying file
 license.txt or http://www.opensource.org/licenses/mit-license.php.  This
@@ -7,12 +8,12 @@ software written by Eric Young (eay@cryptsoft.com) and UPnP software written by
 Thomas Bernard.
 
 
-Mac OS X blackcoind build instructions
+Mac OS X dopecoind build instructions
 Laszlo Hanyecz <solar@heliacal.net>
 Douglas Huff <dhuff@jrbobdobbs.org>
 
 
-See readme-qt.rst for instructions on building BlackCoin QT, the
+See readme-qt.rst for instructions on building DopeCoin QT, the
 graphical user interface.
 
 Tested on 10.5 and 10.6 intel.  PPC is not supported because it's big-endian.
@@ -27,7 +28,7 @@ but you can get the current version from http://developer.apple.com
 
 1.  Clone the github tree to get the source code:
 
-git clone https://github.com/rat4/blackcoin.git blackcoin
+git clone https://github.com/dopecoin-dev/DopeCoinGold.git dopecoin
 
 2.  Download and install MacPorts from http://www.macports.org/
 
@@ -41,14 +42,14 @@ sudo port install boost db48 openssl miniupnpc
 Optionally install qrencode (and set USE_QRCODE=1):
 sudo port install qrencode
 
-4.  Now you should be able to build blackcoind:
+4.  Now you should be able to build dopecoind:
 
-cd blackcoin/src
+cd dopecoin/src
 make -f makefile.osx
 
 Run:
-  ./blackcoind --help  # for a list of command-line options.
+  ./dopecoind --help  # for a list of command-line options.
 Run
-  ./blackcoind -daemon # to start the blackcoin daemon.
+  ./dopecoind -daemon # to start the dopecoin daemon.
 Run
-  ./blackcoind help # When the daemon is running, to get a list of RPC commands
+  ./dopecoind help # When the daemon is running, to get a list of RPC commands

@@ -21,6 +21,7 @@
 
 #include <QMessageBox>
 #include <QTextCodec>
+#include <QFile>
 #include <QLocale>
 #include <QTimer>
 #include <QTranslator>
@@ -101,7 +102,7 @@ static std::string Translate(const char* psz)
 static void handleRunawayException(std::exception *e)
 {
     PrintExceptionContinue(e, "Runaway exception");
-    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. BlackCoin can no longer continue safely and will quit.") + QString("\n\n") + QString::fromStdString(strMiscWarning));
+    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. DopeCoin can no longer continue safely and will quit.") + QString("\n\n") + QString::fromStdString(strMiscWarning));
     exit(1);
 }
 
@@ -137,6 +138,12 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(bitcoin);
     QApplication app(argc, argv);
 
+    // Load stylesheet
+    QFile file( ":/stylesheets/res/stylesheet.qss");
+    file.open( QFile::ReadOnly );
+    QString styleSheet = QLatin1String( file.readAll() );
+    qApp->setStyleSheet( styleSheet );  
+    
     // Do this early as we don't want to bother initializing if we are just calling IPC
     // ... but do it after creating app, so QCoreApplication::arguments is initialized:
     if (PaymentServer::ipcSendCommandLine())
@@ -160,7 +167,7 @@ int main(int argc, char *argv[])
     {
         // This message can not be translated, as translation is not initialized yet
         // (which not yet possible because lang=XX can be overridden in bitcoin.conf in the data directory)
-        QMessageBox::critical(0, "BlackCoin",
+        QMessageBox::critical(0, "DopeCoin",
                               QString("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
         return 1;
     }
@@ -168,12 +175,12 @@ int main(int argc, char *argv[])
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
-    app.setOrganizationName("BlackCoin");
+    app.setOrganizationName("DopeCoin");
     //XXX app.setOrganizationDomain("");
     if(GetBoolArg("-testnet", false)) // Separate UI settings for testnet
-        app.setApplicationName("BlackCoin-Qt-testnet");
+        app.setApplicationName("DopeCoin-Qt-testnet");
     else
-        app.setApplicationName("BlackCoin-Qt");
+        app.setApplicationName("DopeCoin-Qt");
 
     // ... then GUI settings:
     OptionsModel optionsModel;
@@ -229,6 +236,11 @@ int main(int argc, char *argv[])
 #endif
 
     QSplashScreen splash(QPixmap(":/images/splash"), 0);
+    
+    if(GetBoolArg("-testnet", false)) {
+        splash.setPixmap(QPixmap(":/images/splash_testnet"));  
+    }
+    
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min", false))
     {
         splash.show();
@@ -241,8 +253,6 @@ int main(int argc, char *argv[])
 
     try
     {
-        if (fUseBlackTheme)
-            GUIUtil::SetBlackThemeQSS(app);
 
         // Regenerate startup link, to fix links to old versions
         if (GUIUtil::GetStartOnSystemStartup())
